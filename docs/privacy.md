@@ -4,6 +4,9 @@
 |---|---|---|
 | Passwords | The macOS login keychain, as ordinary keychain items tagged `yab` | Yab, under its own signature. Any other app triggers the system's permission dialog. |
 | History, bookmarks, open tabs, hidden elements | Small JSON files in `~/Library/Application Support/Yab/` | You. |
+| What pages said | The words of each page you visit, in `diary.sqlite` in the same folder, so History finds a page by what it said. Never from a private tab or a page asking for a password | You. Off in Settings › Privacy › History (Remember what pages say). |
+| Chats with agents | Each chat and its steps, as files in `chats/` in the same folder | You. With Sync on, your devices too: chats of the last 14 days and pinned ones, the last 80 steps of each, sealed like everything Sync carries; never a chat that mail went into. |
+| What agents remember about you | Markdown files in `memory/` in the same folder, to read, correct or delete in Settings › AI › Memory or in any text editor | You. With Sync on, your devices too, but for what a task kept from mail, which stays on its Mac. Off in Settings › AI › Memory. |
 | Snippets, and what you paste | Snippets in `snippets.json` beside Mail's stores. For the offer to keep text you paste often, a SHA-256 digest of each paste into a page's box and its dates, a week, in `snippet-pastes.json`; never the words, nothing from a private tab or a password manager's copy | You. Off in Settings › Snippets. |
 | Other browsers' history | Read in place, from a copy of each Chromium browser's `History` file, only for a browser you brought in from (or switched on under History from in Settings › Bring In): the field's suggestions, habits, Now and an agent's `history` use it. Never sent anywhere. [docs/other-history.md](other-history.md) | You. Off per browser in Settings › Bring In. |
 | Cookies and site data | WebKit's own store for the app | The sites that set them, as in any browser. |
