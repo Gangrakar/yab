@@ -389,7 +389,15 @@ final class Preferences: ObservableObject, Relaying {
     /// put away comes out (SideReveal).
     var sideReveal: SideReveal {
         willSet { relay.send(\.sideReveal, newValue) }
-        didSet { store.set(sideReveal.rawValue, forKey: SideReveal.key) }
+        didSet {
+            guard sideReveal != oldValue else { return }
+            store.set(sideReveal.rawValue, forKey: SideReveal.key)
+            // One choice for the app: each window has its own settings and
+            // its edge waits by them, so a choice made in one reaches the rest.
+            for browser in BrowserWindows.shared.browsers where browser.prefs !== self && browser.prefs.sideReveal != sideReveal {
+                browser.prefs.sideReveal = sideReveal
+            }
+        }
     }
 
     /// Those watching `path` told again, now that it holds its new value.

@@ -84,6 +84,32 @@ struct SideRevealTests {
         #expect(Preferences().sideReveal == .moment)
     }
 
+    /// Each window has its own settings and watches its own edge: the
+    /// choice made from one reaches the others, as Theme does.
+    @MainActor @Test func everyOpenWindowTakesTheChoice() {
+        _ = NSApplication.shared
+        let held = Store.settings.object(forKey: SideReveal.key)
+        let first = Browser(windowID: UUID()), second = Browser(windowID: UUID())
+        let windows = [first, second].map { browser -> NSWindow in
+            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 400, height: 200), styleMask: .titled, backing: .buffered, defer: false)
+            window.isReleasedWhenClosed = false
+            BrowserWindows.shared.register(window, for: browser)
+            return window
+        }
+        defer {
+            [first, second].forEach { BrowserWindows.shared.forgetForTests($0) }
+            windows.forEach { $0.close() }
+            first.letGo(); second.letGo()
+            Store.settings.set(held, forKey: SideReveal.key)
+        }
+        first.prefs.sideReveal = .moment
+        second.prefs.sideReveal = .moment
+        first.prefs.sideReveal = .instant
+        #expect(second.prefs.sideReveal == .instant)
+        second.prefs.sideReveal = .quick
+        #expect(first.prefs.sideReveal == .quick)
+    }
+
     /// Yab's own agent can change it (NativeActions), and Settings' search
     /// finds the row.
     @MainActor @Test func theRowIsFoundAndYabsAgentCanChangeIt() throws {
